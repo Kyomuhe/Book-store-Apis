@@ -2,6 +2,8 @@ package com.example.kay.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "books")
 public class Book {
@@ -13,13 +15,14 @@ public class Book {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column()
     private String author;
 
-    @Column(nullable = false)
-    private Double price;
+    @Column(precision = 10, scale = 2) // you can adjust precision/scale as needed
+    private BigDecimal price;
 
-    @Column(nullable = false)
+
+    @Column()
     private String description;
 
     @Column(nullable = false)
@@ -27,7 +30,7 @@ public class Book {
 
     public Book(){}
 
-    public Book(String title, String author, Double price, String description, Integer quantity) {
+    public Book(String title, String author, BigDecimal price, String description, Integer quantity) {
         this.title = title;
         this.author = author;
         this.price = price;
@@ -52,10 +55,10 @@ public class Book {
     public void setAuthor(String author){
         this.author = author;
     }
-    public Double getPrice(){
+    public BigDecimal getPrice(){
         return price;
     }
-    public void setPrice(Double price){
+    public void setPrice(BigDecimal price){
         this.price = price;
     }
     public String getDescription(){
@@ -70,5 +73,4 @@ public class Book {
     public void setQuantity(Integer quantity){
         this.quantity = quantity;
     }
-
 }

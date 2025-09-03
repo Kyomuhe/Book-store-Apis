@@ -20,7 +20,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping
+    @GetMapping("/display")
     public ResponseEntity<List<Book>> getAllBooks(){
         List<Book> books = bookService.getAllBooks();
         return ResponseEntity.ok(books);
@@ -32,7 +32,8 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-    @DeleteMapping("/{id}")
+    //deleting a book
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         boolean deleted = bookService.deleteBook(id);
 
@@ -48,6 +49,19 @@ public class BookController {
         Book savedBook = bookService.saveBook(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
     }
+//update book /api/books/update
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
+        Book updatedBook = bookService.updateBook(id, bookDetails);
+        if (updatedBook != null) {
+            return ResponseEntity.ok(updatedBook);
+        } else {
+            return ResponseEntity.notFound().build();
+    }
+}
+
+
+
 
 
 }
