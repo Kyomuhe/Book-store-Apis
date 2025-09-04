@@ -1,7 +1,5 @@
 package com.example.kay.model;
-
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
 @Entity
@@ -18,9 +16,8 @@ public class Book {
     @Column()
     private String author;
 
-    @Column(precision = 10, scale = 2) // you can adjust precision/scale as needed
+    @Column(precision = 10, scale = 2)
     private BigDecimal price;
-
 
     @Column()
     private String description;

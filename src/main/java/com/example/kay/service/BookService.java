@@ -16,10 +16,14 @@ public class BookService {
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
+
+    //displaying all books
     public List<Book> getAllBooks(){
         return bookRepository.findAll();
     }
 
+
+//creating a new book
     public Book saveBook(Book book){
         return bookRepository.save(book);
     }
@@ -35,9 +39,10 @@ public class BookService {
             book.setQuantity(bookDetails.getQuantity());
             return bookRepository.save(book);
         }
-        return null;//in this case the book is not found
+        return null;
     }
 
+    //delete a book
     public boolean deleteBook(Long id){
         if(bookRepository.existsById(id)){
             bookRepository.deleteById(id);
@@ -47,7 +52,9 @@ public class BookService {
     }
     //searching books by title
     public List<Book> searchBookByTitle(String title){
+
         return bookRepository.findByTitleContainingIgnoreCase(title);
     }
+
 
 }

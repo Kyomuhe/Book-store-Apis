@@ -2,30 +2,45 @@ package com.example.kay.controller;// BookController.java - This handles all the
 import com.example.kay.model.Book;
 import com.example.kay.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("api/books") //this is the base url for all end points
+@RequestMapping("api/books") //this is the base url for all my end points
 @CrossOrigin(origins = "*") //allow requests for all origins
 
 public class BookController {
     private final BookService bookService;
 
-    //constructor injection
+    @Value("${app.welcome.message}")
+    private String message;
+
+    @Value("${app.max.books}")
+    private int maxBooks;
+
     @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
+    //testing the different profiles
+    @GetMapping("welcome")
+    public String welcomeMessage() {
+        return message + " (Max books allowed: " + maxBooks + ")";
+    }
+
+//returning all books
     @GetMapping("/display")
     public ResponseEntity<List<Book>> getAllBooks(){
         List<Book> books = bookService.getAllBooks();
         return ResponseEntity.ok(books);
 
     }
+
+    //searching using title
     @GetMapping("/search")
     public ResponseEntity<List<Book>> searchBooks(@RequestParam String title) {
         List<Book> books = bookService.searchBookByTitle(title);
@@ -43,12 +58,13 @@ public class BookController {
         return ResponseEntity.notFound().build();
     }
 
-    // POST /api/books - Create a new book
+    //Create a new book
     @PostMapping
     public ResponseEntity<Book> createBook(@RequestBody Book book) {
         Book savedBook = bookService.saveBook(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
     }
+
 //update book /api/books/update
     @PutMapping("/update/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
