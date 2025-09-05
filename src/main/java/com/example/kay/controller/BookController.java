@@ -3,6 +3,7 @@ import com.example.kay.model.Book;
 import com.example.kay.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -74,9 +75,24 @@ public class BookController {
         } else {
             return ResponseEntity.notFound().build();
     }
+
 }
 
+//displaying books using pages
+    @GetMapping("/pages")
+    public ResponseEntity<Map<String, Object>> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size) {
 
+        Page<Book> bookPage = bookService.getAllBooksWithPagination(page, size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("books", bookPage.getContent());
+        response.put("totalPages", bookPage.getTotalPages());
+        response.put("currentPage", page);
+
+        return ResponseEntity.ok(response);
+    }
 
 
 
