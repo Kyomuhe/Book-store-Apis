@@ -1,4 +1,4 @@
-package com.example.kay.controller;// BookController.java - This handles all the API requests
+package com.example.kay.controller;
 import com.example.kay.model.Book;
 import com.example.kay.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,27 +10,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("api/books") //this is the base url for all my end points
-@CrossOrigin(origins = "*") //allow requests for all origins
+@RequestMapping("api/books")
+@CrossOrigin(origins = "*")
 
 public class BookController {
     private final BookService bookService;
 
-    @Value("${app.welcome.message}")
+    @Value("${app.name.message}")
     private String message;
-
-    @Value("${app.max.books}")
-    private int maxBooks;
 
     @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
-    //testing the different profiles
-    @GetMapping("welcome")
-    public String welcomeMessage() {
-        return message + " (Max books allowed: " + maxBooks + ")";
+    @GetMapping("/welcome")
+    public String welcome() {
+        return message;
     }
 
 //returning all books
@@ -66,7 +62,7 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
     }
 
-//update book /api/books/update
+//update book
     @PutMapping("/update/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
         Book updatedBook = bookService.updateBook(id, bookDetails);
