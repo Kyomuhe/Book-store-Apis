@@ -19,20 +19,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor // Keep this for userDetailsService
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    // Remove the dependency on JwtAuthenticationFilter from here
     private final UserDetailsService userDetailsService;
 
-    // Inject JwtAuthenticationFilter directly into the method
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/books/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

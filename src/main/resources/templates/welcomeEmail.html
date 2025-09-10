@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Kay's Book Store</title>
+</head>
+<body>
+<h2>Hi, <span th:text="${name}">Customer</span>!</h2>
+<p>Welcome to Kay's Book store! We're so excited to have you join.</p>
+<p>You signed up on <b><span th:text="${date}">date</span></b>.</p>
+<br>
+<p style="color:gray; font-size:12px;">This is an automated email. Please don't reply.</p>
+</body>
+</html>
