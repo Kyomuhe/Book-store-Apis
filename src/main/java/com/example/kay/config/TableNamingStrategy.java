@@ -22,6 +22,7 @@ public class TableNamingStrategy implements PhysicalNamingStrategy {
 
     @Override
     public Identifier toPhysicalSchemaName(Identifier logicalName, JdbcEnvironment context) {
+
         return logicalName;
     }
 
