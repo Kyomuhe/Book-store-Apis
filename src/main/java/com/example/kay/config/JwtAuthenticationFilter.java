@@ -24,7 +24,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserService userService;
 
-    //This runs on every request before it reaches the controllers.
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,

@@ -27,12 +27,10 @@ public class EmailService {
         helper.setTo(to);
         helper.setSubject("Welcome to Kays Book Store");
 
-        // Prepare variables for the template
         Context context = new Context();
         context.setVariable("name", name);
         context.setVariable("date", LocalDate.now().toString());
 
-        // Process the Thymeleaf template
         String content = templateEngine.process("welcomeEmail", context);
 
         helper.setText(content, true);

@@ -19,8 +19,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class AuthController {
 
+public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtService jwtService;
@@ -58,6 +58,7 @@ public class AuthController {
         }
     }
 
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
@@ -93,7 +94,7 @@ public class AuthController {
         return userResponse;
     }
 
-    //bind incoming JSON to Java objects
+    //binds incoming JSON to Java objects
     @Data
     public static class SignupRequest {
         private String username;
