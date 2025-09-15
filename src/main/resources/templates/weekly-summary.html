@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Summary Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .header { background: #007bff; color: white; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { padding: 20px 0; }
+        .stat-box { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #007bff; }
+        .footer { text-align: center; color: #666; font-size: 12px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Weekly Summary Report</h1>
+        <p>Week of {{weekStart}} to {{weekEnd}}</p>
+    </div>
+
+    <div class="content">
+        <div class="stat-box">
+            <h3>📊 User Statistics</h3>
+            <p><strong>Total Users:</strong> {{totalUsers}}</p>
+            <p><strong>New Users This Week:</strong> {{newUsersThisWeek}}</p>
+        </div>
+
+        <div class="stat-box">
+            <h3>🔐 Authentication Activity</h3>
+            <p><strong>Login Attempts:</strong> {{loginAttempts}}</p>
+            <p><strong>Successful Logins:</strong> {{successfulLogins}}</p>
+        </div>
+
+        <div class="stat-box">
+            <h3>📧 Email Activity</h3>
+            <p><strong>Welcome Emails Sent:</strong> {{welcomeEmailsSent}}</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>This is an automated weekly summary email</p>
+    </div>
+</div>
+</body>
+</html>

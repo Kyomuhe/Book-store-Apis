@@ -52,8 +52,13 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+    public long getTotalUserCount() {
+        return userRepository.count();
+    }
+
+    public long getUsersCreatedInLastWeek() {
+        LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+        return userRepository.countByCreatedAtAfter(weekAgo);
     }
 }

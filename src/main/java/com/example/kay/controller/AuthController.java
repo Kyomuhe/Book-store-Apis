@@ -1,18 +1,19 @@
 package com.example.kay.controller;
 
 import com.example.kay.model.User;
-import com.example.kay.service.EmailService;
-import com.example.kay.service.JwtService;
-import com.example.kay.service.UserService;
+import com.example.kay.service.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ public class AuthController {
     private final UserService userService;
     private final JwtService jwtService;
     private final EmailService emailService;
+    private final WeeklySummaryService weeklySummaryService;
+    private final CloudinaryService cloudinaryService;
 
 
     @PostMapping("/signup")
@@ -80,6 +83,25 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Invalid username or password"));
+        }
+    }
+
+
+    @PostMapping("/send-weekly-summary")
+    public ResponseEntity<String> testWeeklySummary() {
+        weeklySummaryService.sendWeeklySummary();
+        return ResponseEntity.ok("Weekly summary sent!");
+    }
+
+    @PostMapping("upload")
+    public ResponseEntity<Map> upload(@RequestParam("file") MultipartFile file) throws IOException {
+        try {
+            Map result = cloudinaryService.uploadFile(file);
+            return ResponseEntity.ok(result);
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Upload failed"));
         }
     }
 
