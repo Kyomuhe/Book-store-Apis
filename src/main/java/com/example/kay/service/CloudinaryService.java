@@ -1,6 +1,7 @@
 package com.example.kay.service;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,5 +30,17 @@ public class CloudinaryService {
         return cloudinary.uploader().upload(file.getBytes(),
                 ObjectUtils.asMap("resource_type", "auto"));
     }
+
+
+    public String generateThumbnail(String publicId) {
+        return cloudinary.url()
+                .transformation(new Transformation()
+                        .width(150)
+                        .height(150)
+                        .crop("fill")
+                        .quality("auto"))
+                .generate(publicId);
+    }
+
 }
 

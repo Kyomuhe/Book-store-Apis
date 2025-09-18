@@ -97,6 +97,12 @@ public class AuthController {
     public ResponseEntity<Map> upload(@RequestParam("file") MultipartFile file) throws IOException {
         try {
             Map result = cloudinaryService.uploadFile(file);
+
+            String publicId = result.get("public_id").toString();
+            String thumbnailUrl = cloudinaryService.generateThumbnail(publicId);
+
+            result.put("thumbnailUrl", thumbnailUrl);
+
             return ResponseEntity.ok(result);
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));

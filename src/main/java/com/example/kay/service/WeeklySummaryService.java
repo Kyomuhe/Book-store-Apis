@@ -59,7 +59,6 @@ public class WeeklySummaryService {
         long successfulLogins = getSuccessfulLoginsThisWeek();
         long welcomeEmailsSent = getWelcomeEmailsSentThisWeek();
 
-        // Replace placeholders in template
         return template
                 .replace("{{weekStart}}", weekStart.format(formatter))
                 .replace("{{weekEnd}}", today.minusDays(1).format(formatter))

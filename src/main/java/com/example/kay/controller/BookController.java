@@ -1,28 +1,32 @@
 package com.example.kay.controller;
 import com.example.kay.model.Book;
 import com.example.kay.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.kay.service.CsvImportService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
+
+
 import java.util.*;
 
 @RestController
 @RequestMapping("api/books")
 @CrossOrigin(origins = "*")
-
+@RequiredArgsConstructor
 public class BookController {
     private final BookService bookService;
+    private final CsvImportService csvImportService;
+
 
     @Value("${app.name.message}")
     private String message;
-
-    @Autowired
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
 
     @GetMapping("/welcome")
     public String welcome() {
@@ -90,6 +94,46 @@ public class BookController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/upload")
+    public String uploadCsv(@RequestParam("file") MultipartFile file) {
+        try {
+            csvImportService.importCsv(file);
+            return "CSV data imported successfully!";
+        } catch (Exception e) {
+            return "Error importing CSV: " + e.getMessage();
+        }
+    }
+    @GetMapping("/export")
+    public ResponseEntity<ByteArrayResource> exportToExcel() {
+        try {
+            byte[] excelData = csvImportService.exportBooksToExcel();
+            String filename = "books_export.xlsx";
+
+            ByteArrayResource resource = new ByteArrayResource(excelData);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(resource);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+@GetMapping("/pdf")
+    public ResponseEntity<byte[]> exportBooksToPdf() {
+        try {
+            byte[] pdfData = csvImportService.exportBooksToPdf();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "books.pdf");
+
+            return new ResponseEntity<>(pdfData, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 }
