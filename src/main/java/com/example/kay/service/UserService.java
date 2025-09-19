@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Service
 @Transactional
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService{
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

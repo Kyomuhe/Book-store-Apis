@@ -83,7 +83,7 @@ public class CsvImportService {
     }
 
     //get pdf
-    public byte[] exportBooksToPdf() throws IOException, DocumentException {
+    public byte[] exportBooksToPdf() throws IOException {
         List<Book> books = bookRepository.findAll();
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -91,17 +91,14 @@ public class CsvImportService {
             PdfWriter.getInstance(document, outputStream);
             document.open();
 
-            // Creating a simple table
             PdfPTable table = new PdfPTable(5);
 
-            // Add headers
             table.addCell("Title");
             table.addCell("Description");
             table.addCell("Price");
             table.addCell("Author");
             table.addCell("Quantity");
 
-            // Adding data
             for (Book book : books) {
                 table.addCell(book.getTitle());
                 table.addCell(book.getDescription());

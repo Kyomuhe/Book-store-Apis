@@ -85,7 +85,6 @@ public class BookController {
             @RequestParam(defaultValue = "2") int size) {
 
         Page<Book> bookPage = bookService.getAllBooksWithPagination(page, size);
-
         Map<String, Object> response = new HashMap<>();
         response.put("books", bookPage.getContent());
         response.put("totalPages", bookPage.getTotalPages());
@@ -103,6 +102,7 @@ public class BookController {
             return "Error importing CSV: " + e.getMessage();
         }
     }
+    
     @GetMapping("/export")
     public ResponseEntity<ByteArrayResource> exportToExcel() {
         try {
@@ -120,6 +120,7 @@ public class BookController {
             return ResponseEntity.badRequest().build();
         }
     }
+
 @GetMapping("/pdf")
     public ResponseEntity<byte[]> exportBooksToPdf() {
         try {

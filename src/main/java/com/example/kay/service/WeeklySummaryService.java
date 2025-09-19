@@ -31,7 +31,7 @@ public class WeeklySummaryService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-    // Run every Monday at 9 AM
+    // Runs every Monday at 9 AM
     @Scheduled(cron = "0 0 9 * * MON")
     public void sendWeeklySummary() {
         try {
@@ -43,11 +43,10 @@ public class WeeklySummaryService {
     }
 
     private String generateWeeklySummaryContent() throws IOException {
-        // Load HTML template
         ClassPathResource resource = new ClassPathResource("templates/weekly-summary.html");
         String template = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
-        // Get date range for the past week
+        // Getting date range for the past week
         LocalDate today = LocalDate.now();
         LocalDate weekStart = today.minusDays(7);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");

@@ -86,7 +86,6 @@ public class AuthController {
         }
     }
 
-
     @PostMapping("/send-weekly-summary")
     public ResponseEntity<String> testWeeklySummary() {
         weeklySummaryService.sendWeeklySummary();
@@ -110,6 +109,9 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Upload failed"));
         }
     }
+
+
+
 
     private Map<String, Object> createUserResponse(User user) {
         Map<String, Object> userResponse = new HashMap<>();
