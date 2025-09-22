@@ -1,5 +1,6 @@
 package com.example.kay.controller;
 
+import com.example.kay.dto.PaginationResponse;
 import com.example.kay.model.User;
 import com.example.kay.service.*;
 import lombok.Data;
@@ -111,6 +112,81 @@ public class AuthController {
     }
 
 
+    @GetMapping("display")
+    public ResponseEntity<PaginationResponse<User>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) User.Role role,
+            @RequestParam(required = false) Boolean enabled) {
+
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        if (size > 100) size = 100;
+
+        // Validating sortBy field
+        String[] allowedSortFields = {"id", "username", "email", "firstName",
+                "lastName", "role", "enabled", "createdAt", "updatedAt"};
+        boolean validSortField = false;
+        for (String field : allowedSortFields) {
+            if (field.equals(sortBy)) {
+                validSortField = true;
+                break;
+            }
+        }
+        if (!validSortField) {
+            sortBy = "id";
+        }
+
+        PaginationResponse<User> response = userService.getAllUsers(
+                page, size, sortBy, sortDirection, search, role, enabled);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search/username")
+    public ResponseEntity<PaginationResponse<User>> searchUsersByUsername(
+            @RequestParam String username,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "username") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        if (size > 100) size = 100;
+
+        PaginationResponse<User> response = userService.searchUsersByUsername(
+                username, page, size, sortBy, sortDirection);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search/email")
+    public ResponseEntity<PaginationResponse<User>> searchUsersByEmail(
+            @RequestParam String email,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "email") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        if (size > 100) size = 100;
+
+        PaginationResponse<User> response = userService.searchUsersByEmail(
+                email, page, size, sortBy, sortDirection);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("search/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
+    }
 
 
     private Map<String, Object> createUserResponse(User user) {
