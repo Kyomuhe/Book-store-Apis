@@ -14,7 +14,6 @@ import java.util.Optional;
 public class BookService {
     private final BookRepository bookRepository;
 
-    //constructor injection
     @Autowired
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;

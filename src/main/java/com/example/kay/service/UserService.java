@@ -69,7 +69,7 @@ public class UserService implements UserDetailsService{
         return userRepository.countByCreatedAtAfter(weekAgo);
     }
 
-//displaying all users
+//displaying users
     public PaginationResponse<User> getAllUsers(
             int page,
             int size,
