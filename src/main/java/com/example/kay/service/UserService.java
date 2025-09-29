@@ -3,12 +3,12 @@ package com.example.kay.service;
 import com.example.kay.dto.PaginationResponse;
 import com.example.kay.model.User;
 import com.example.kay.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,15 +19,11 @@ import java.time.LocalDateTime;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService{
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -36,7 +32,7 @@ public class UserService implements UserDetailsService{
     }
 
     //registering a user
-    public User createUser(String username, String email, String password, String firstName, String lastName) {
+    public User createUser(String username, String email, String password, String firstName, String lastName, String role) {
         if (userRepository.existsByUsername(username)) {
             throw new RuntimeException("Username already exists");
         }
@@ -55,8 +51,17 @@ public class UserService implements UserDetailsService{
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
+        if (role != null && !role.isEmpty()) {
+            user.setRole(User.Role.valueOf(role.toUpperCase()));
+        } else {
+            user.setRole(User.Role.USER);
+        }
+
+
         return userRepository.save(user);
     }
+
+
 
 //getting the total number of users registered
     public long getTotalUserCount() {

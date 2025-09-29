@@ -12,9 +12,12 @@ import java.util.Map;
 
 @Service
 public class CloudinaryService {
+    private final Cloudinary cloudinary;
 
     @Autowired
-    private Cloudinary cloudinary;
+    public  CloudinaryService (Cloudinary cloudinary) {
+        this.cloudinary = cloudinary;
+    }
 
     public Map uploadFile(MultipartFile file) throws IOException {
         if (file.getSize() > 2 * 1024 * 1024) {

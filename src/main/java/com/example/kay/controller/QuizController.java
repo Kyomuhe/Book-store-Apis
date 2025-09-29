@@ -23,8 +23,9 @@ public class QuizController {
         try {
             byte[] pdfBytes = pdfService.generateQuizPdf(request.getTitle(), request.getQuestions());
 
+            //setting up http headers telling the browser this is a pdf file to download
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentType(MediaType.APPLICATION_PDF);//this is the pdf content
             headers.setContentDispositionFormData("attachment", "quiz.pdf");
             headers.setContentLength(pdfBytes.length);
 

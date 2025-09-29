@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,18 +40,20 @@ public class AuthController {
                     request.getEmail(),
                     request.getPassword(),
                     request.getFirstName(),
-                    request.getLastName()
+                    request.getLastName(),
+                    request.getRole()
+
             );
 
             String jwt = jwtService.generateToken(user);
 
-            // Send Welcome Email
-            try {
-                emailService.sendWelcomeEmail(user.getEmail(), user.getFirstName());
-            } catch (Exception e) {
-                e.printStackTrace();
-                // Log the error but don't fail the signup process
-            }
+//            // Send Welcome Email
+//            try {
+//                emailService.sendWelcomeEmail(user.getEmail(), user.getFirstName());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                // Log the error but don't fail the signup process
+//            }
 
             Map<String, Object> response = new HashMap<>();
             response.put("token", jwt);
@@ -88,12 +91,14 @@ public class AuthController {
     }
 
     @PostMapping("/send-weekly-summary")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> testWeeklySummary() {
         weeklySummaryService.sendWeeklySummary();
         return ResponseEntity.ok("Weekly summary sent!");
     }
 
     @PostMapping("upload")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Map> upload(@RequestParam("file") MultipartFile file) throws IOException {
         try {
             Map result = cloudinaryService.uploadFile(file);
@@ -113,6 +118,7 @@ public class AuthController {
 
 
     @GetMapping("display")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PaginationResponse<User>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -147,6 +153,7 @@ public class AuthController {
     }
 
     @GetMapping("/search/username")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<PaginationResponse<User>> searchUsersByUsername(
             @RequestParam String username,
             @RequestParam(defaultValue = "0") int page,
@@ -165,6 +172,7 @@ public class AuthController {
     }
 
     @GetMapping("/search/email")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<PaginationResponse<User>> searchUsersByEmail(
             @RequestParam String email,
             @RequestParam(defaultValue = "0") int page,
@@ -183,6 +191,7 @@ public class AuthController {
     }
 
     @GetMapping("search/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
@@ -208,6 +217,7 @@ public class AuthController {
         private String password;
         private String firstName;
         private String lastName;
+        private String role;
     }
 
     @Data
