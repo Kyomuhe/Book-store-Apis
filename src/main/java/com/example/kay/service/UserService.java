@@ -62,7 +62,6 @@ public class UserService implements UserDetailsService{
     }
 
 
-
 //getting the total number of users registered
     public long getTotalUserCount() {
         return userRepository.count();

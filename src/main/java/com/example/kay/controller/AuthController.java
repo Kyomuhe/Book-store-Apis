@@ -1,6 +1,7 @@
 package com.example.kay.controller;
 
 import com.example.kay.dto.PaginationResponse;
+import com.example.kay.dto.RefreshTokenRequest;
 import com.example.kay.model.User;
 import com.example.kay.service.*;
 import lombok.Data;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,6 +48,8 @@ public class AuthController {
             );
 
             String jwt = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
+
 
 //            // Send Welcome Email
 //            try {
@@ -56,7 +60,8 @@ public class AuthController {
 //            }
 
             Map<String, Object> response = new HashMap<>();
-            response.put("token", jwt);
+            response.put("accessToken", jwt);
+            response.put("refreshToken", refreshToken);
             response.put("user", createUserResponse(user));
 
             return ResponseEntity.ok(response);
@@ -78,10 +83,13 @@ public class AuthController {
 
             User user = (User) authentication.getPrincipal();
             String jwt = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
+
 
 
             Map<String, Object> response = new HashMap<>();
-            response.put("token", jwt);
+            response.put("accessToken", jwt);
+            response.put("refreshToken", refreshToken);
             response.put("user", createUserResponse(user));
 
             return ResponseEntity.ok(response);
@@ -89,6 +97,40 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of("error", "Invalid username or password"));
         }
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
+        try {
+            final String refreshToken = request.getRefreshToken();
+            final String username = jwtService.extractUsername(refreshToken);
+
+            if (username == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Invalid refresh token"));
+            }
+
+            UserDetails user = userService.loadUserByUsername(username);
+
+            if (!jwtService.isTokenValid(refreshToken, user)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Invalid or expired refresh token"));
+            }
+
+            String newAccessToken = jwtService.generateToken(user);
+            String newRefreshToken = jwtService.generateRefreshToken(user);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("accessToken", newAccessToken);
+            response.put("refreshToken", newRefreshToken);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Token refresh failed: " + e.getMessage()));
+        }
+    }
+
+
 
     @PostMapping("/send-weekly-summary")
     @PreAuthorize("hasRole('ADMIN')")
